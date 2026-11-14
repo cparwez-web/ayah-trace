@@ -112,16 +112,49 @@ header{padding:12px 14px 8px;gap:10px;justify-content:flex-start}
 .sw{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid var(--line)}
 .sw.on{border-color:var(--gold);box-shadow:0 0 0 3px var(--surface) inset}
 #done{background:var(--accent);border-color:var(--accent);font-weight:600}
+#picker{margin:0 14px 10px;padding:12px 12px 10px;border:1px solid var(--goldsoft);border-left:4px solid var(--gold);border-radius:16px;background:linear-gradient(180deg,var(--surface),color-mix(in srgb,var(--surface) 90%,var(--gold)));box-shadow:0 8px 22px rgba(0,0,0,.14)}
+#picker .ph{display:flex;align-items:center;gap:8px;color:var(--gold);font-weight:700;font-size:13px;letter-spacing:.6px;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid var(--goldsoft)}
+#picker .ph svg{width:18px;height:18px}
+#pclose{background:transparent;color:var(--muted);border-style:dashed}
+#top{position:relative;z-index:15}
+#picker{position:absolute;left:14px;right:14px;top:100%;margin:4px 0 0;padding:14px;gap:10px;overflow:hidden;border:1px solid var(--goldsoft);border-radius:18px;background:linear-gradient(180deg,var(--surface),color-mix(in srgb,var(--surface) 92%,var(--gold)));box-shadow:0 14px 34px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.06)}
+#picker::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+#picker.show{animation:pk .18s ease-out}
+@keyframes pk{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+#picker .ph{display:flex;align-items:center;gap:8px;color:var(--gold);font-weight:700;font-size:12.5px;letter-spacing:.8px;text-transform:uppercase;padding:2px 0 8px;border-bottom:1px solid var(--goldsoft)}
+#pclose{margin-left:auto;width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%;background:transparent;border-style:solid;color:var(--muted);border-style:solid}
+#pclose svg{width:18px;height:18px}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fl{font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted)}
+.grid3{display:grid;gap:8px;align-items:end}
+#g1{grid-template-columns:1fr 1fr 64px}
+#g2{grid-template-columns:96px 64px 1fr}
+#picker select,#picker input{width:100%;box-sizing:border-box;height:44px}
+#picker .pri{height:44px;background:var(--accent);border-color:var(--accent);color:var(--on);font-weight:700;padding:0}
+#prog{padding:5px 14px 8px;scrollbar-width:none}
+#prog::-webkit-scrollbar{display:none}
 </style>
 </head>
 <body>
-<header>
+<div id="top"><header>
   <span class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.9-1.2-1.2 4.9L22.5 12l-4.2 2.6 1.2 4.9-4.9-1.2L12 22.5l-2.6-4.2-4.9 1.2 1.2-4.9L1.5 12l4.2-2.6-1.2-4.9 4.9 1.2z"/></svg></span>
   <button id="title">Al-Fatiha 1:1 ▾</button>
   <div class="nav"><button id="prev" aria-label="Previous"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><button id="next" aria-label="Next"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
 </header>
-<div id="picker"><div class="row"><select id="sur"></select></div><div class="row"><label>From <input type="number" id="af" min="1" value="1"></label><label>To <input type="number" id="at" min="1" value="7"></label><button id="go">Go</button></div><div class="row"><label>Page <input type="number" id="pg" min="1" max="604" placeholder="1-604"></label><button id="gp">Go</button></div>
-<div class="row"><select id="juz"></select></div></div>
+<div id="picker">
+  <div class="ph"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Choose a passage</span><button id="pclose" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+  <div class="fld"><label class="fl" for="sur">Surah</label><select id="sur"></select></div>
+  <div class="grid3" id="g1">
+    <div class="fld"><label class="fl" for="af">From ayah</label><input type="number" id="af" min="1" value="1" inputmode="numeric"></div>
+    <div class="fld"><label class="fl" for="at">To ayah</label><input type="number" id="at" min="1" value="7" inputmode="numeric"></div>
+    <button id="go" class="pri">Go</button>
+  </div>
+  <div class="grid3" id="g2">
+    <div class="fld"><label class="fl" for="pg">Page</label><input type="number" id="pg" min="1" max="604" placeholder="1-604" inputmode="numeric"></div>
+    <button id="gp" class="pri">Go</button>
+    <div class="fld"><label class="fl" for="juz">Juz</label><select id="juz"></select></div>
+  </div>
+</div></div>
 <div id="modes">
   <button data-m="trace" class="on"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Trace</button>
   <button data-m="guided"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>Guided</button>
@@ -285,7 +318,9 @@ const sel=$('sur');NAMES.forEach((n,k)=>{const o=document.createElement('option'
 const js=$('juz');js.innerHTML='<option value="">Jump to Juz\u2026</option>';JUZ.forEach((j,k)=>{const o=document.createElement('option');o.value=k;o.textContent='Juz '+(k+1)+' \u00b7 '+NAMES[j[0]-1]+' '+j[0]+':'+j[1];js.appendChild(o)});
 $('gp').onclick=()=>{const p=Math.max(1,Math.min(604,+$('pg').value||1)),a=PG[p],b=PG[p+1];setPassage(a[0],a[1],b[0]===a[0]?b[1]-1:999,0);$('picker').classList.remove('show')};
 $('title').onclick=()=>$('picker').classList.toggle('show');
-sel.onchange=()=>{setPassage(+sel.value,1,999,0)};
+$('pclose').onclick=()=>$('picker').classList.remove('show');
+cv.addEventListener('pointerdown',()=>$('picker').classList.remove('show'));
+sel.onchange=()=>{setPassage(+sel.value,1,999,0);$('picker').classList.remove('show')};
 $('go').onclick=()=>{setPassage(+sel.value,+$('af').value||1,+$('at').value||999,0);$('picker').classList.remove('show')};
 js.onchange=()=>{if(js.value==='')return;const j=JUZ[+js.value];setPassage(j[0],j[1],999,0);js.value='';$('picker').classList.remove('show')};
 let st0=null;try{st0=JSON.parse(localStorage.getItem('ayahPos')||'null')}catch(e){}
