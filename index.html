@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0c1713" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f5efe0" media="(prefers-color-scheme: light)">
@@ -26,7 +26,7 @@ header b{font-size:15px}
 #picker{display:none;flex-direction:column;gap:8px;padding:0 14px 10px}
 #picker.show{display:flex}
 #picker .row{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
-select,input[type=number]{font:inherit;font-size:14px;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);min-width:0}
+select,input[type=number]{font:inherit;font-size:16px;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);min-width:0}
 #sur,#juz{flex:1}
 input[type=number]{width:64px;-webkit-user-select:text;user-select:text}
 #prog{overflow-x:auto}
@@ -210,6 +210,7 @@ const VN={se:'Simple Enhanced',s:'Simple',sm:'Simple Minimal',u:'Uthmani',um:'Ut
 function strip(s,a,x){if(a!==1||s===1||s===9||bism)return x;const w=x.split(' ');return w.length>4?w.slice(4).join(' '):x}
 const NAMES=["Al-Fatiha", "Al-Baqarah", "Ali 'Imran", "An-Nisa", "Al-Ma'idah", "Al-An'am", "Al-A'raf", "Al-Anfal", "At-Tawbah", "Yunus", "Hud", "Yusuf", "Ar-Ra'd", "Ibrahim", "Al-Hijr", "An-Nahl", "Al-Isra", "Al-Kahf", "Maryam", "Ta-Ha", "Al-Anbiya", "Al-Hajj", "Al-Mu'minun", "An-Nur", "Al-Furqan", "Ash-Shu'ara", "An-Naml", "Al-Qasas", "Al-'Ankabut", "Ar-Rum", "Luqman", "As-Sajdah", "Al-Ahzab", "Saba", "Fatir", "Ya-Sin", "As-Saffat", "Sad", "Az-Zumar", "Ghafir", "Fussilat", "Ash-Shura", "Az-Zukhruf", "Ad-Dukhan", "Al-Jathiyah", "Al-Ahqaf", "Muhammad", "Al-Fath", "Al-Hujurat", "Qaf", "Adh-Dhariyat", "At-Tur", "An-Najm", "Al-Qamar", "Ar-Rahman", "Al-Waqi'ah", "Al-Hadid", "Al-Mujadila", "Al-Hashr", "Al-Mumtahanah", "As-Saff", "Al-Jumu'ah", "Al-Munafiqun", "At-Taghabun", "At-Talaq", "At-Tahrim", "Al-Mulk", "Al-Qalam", "Al-Haqqah", "Al-Ma'arij", "Nuh", "Al-Jinn", "Al-Muzzammil", "Al-Muddaththir", "Al-Qiyamah", "Al-Insan", "Al-Mursalat", "An-Naba", "An-Nazi'at", "'Abasa", "At-Takwir", "Al-Infitar", "Al-Mutaffifin", "Al-Inshiqaq", "Al-Buruj", "At-Tariq", "Al-A'la", "Al-Ghashiyah", "Al-Fajr", "Al-Balad", "Ash-Shams", "Al-Layl", "Ad-Duha", "Ash-Sharh", "At-Tin", "Al-'Alaq", "Al-Qadr", "Al-Bayyinah", "Az-Zalzalah", "Al-'Adiyat", "Al-Qari'ah", "At-Takathur", "Al-'Asr", "Al-Humazah", "Al-Fil", "Quraysh", "Al-Ma'un", "Al-Kawthar", "Al-Kafirun", "An-Nasr", "Al-Masad", "Al-Ikhlas", "Al-Falaq", "An-Nas"];
 const JUZ=[[1, 1], [2, 142], [2, 253], [3, 93], [4, 24], [4, 148], [5, 82], [6, 111], [7, 88], [8, 41], [9, 93], [11, 6], [12, 53], [15, 1], [17, 1], [18, 75], [21, 1], [23, 1], [25, 21], [27, 56], [29, 46], [33, 31], [36, 28], [39, 32], [41, 47], [46, 1], [51, 31], [58, 1], [67, 1], [78, 1]];
+function closePicker(){const a=document.activeElement;if(a&&a.blur)a.blur();$('picker').classList.remove('show');window.scrollTo(0,0)}
 function pageOf(s,a){let lo=1,hi=604;while(lo<hi){const m=(lo+hi+1)>>1,p=PG[m];if(p[0]<s||(p[0]===s&&p[1]<=a))lo=m;else hi=m-1}return lo}
 function key(k){return sur+':'+(from+k)}
 function savePos(){try{localStorage.setItem('ayahPos',JSON.stringify({sur,from,to,i}))}catch(e){}}
@@ -316,13 +317,13 @@ function bmUI(){$('bm').classList.toggle('on',bism);$('bm').textContent='Bismill
 bmUI();$('bm').onclick=()=>{bism=!bism;bmUI();saveSet();setPassage(sur,from,to,i)};
 const sel=$('sur');NAMES.forEach((n,k)=>{const o=document.createElement('option');o.value=k+1;o.textContent=(k+1)+'. '+n+' ('+Q[k].length+')';sel.appendChild(o)});
 const js=$('juz');js.innerHTML='<option value="">Jump to Juz\u2026</option>';JUZ.forEach((j,k)=>{const o=document.createElement('option');o.value=k;o.textContent='Juz '+(k+1)+' \u00b7 '+NAMES[j[0]-1]+' '+j[0]+':'+j[1];js.appendChild(o)});
-$('gp').onclick=()=>{const p=Math.max(1,Math.min(604,+$('pg').value||1)),a=PG[p],b=PG[p+1];setPassage(a[0],a[1],b[0]===a[0]?b[1]-1:999,0);$('picker').classList.remove('show')};
+$('gp').onclick=()=>{const p=Math.max(1,Math.min(604,+$('pg').value||1)),a=PG[p],b=PG[p+1];setPassage(a[0],a[1],b[0]===a[0]?b[1]-1:999,0);closePicker()};
 $('title').onclick=()=>$('picker').classList.toggle('show');
-$('pclose').onclick=()=>$('picker').classList.remove('show');
-cv.addEventListener('pointerdown',()=>$('picker').classList.remove('show'));
-sel.onchange=()=>{setPassage(+sel.value,1,999,0);$('picker').classList.remove('show')};
-$('go').onclick=()=>{setPassage(+sel.value,+$('af').value||1,+$('at').value||999,0);$('picker').classList.remove('show')};
-js.onchange=()=>{if(js.value==='')return;const j=JUZ[+js.value];setPassage(j[0],j[1],999,0);js.value='';$('picker').classList.remove('show')};
+$('pclose').onclick=()=>closePicker();
+cv.addEventListener('pointerdown',()=>closePicker());
+sel.onchange=()=>{setPassage(+sel.value,1,999,0);closePicker()};
+$('go').onclick=()=>{setPassage(+sel.value,+$('af').value||1,+$('at').value||999,0);closePicker()};
+js.onchange=()=>{if(js.value==='')return;const j=JUZ[+js.value];setPassage(j[0],j[1],999,0);js.value='';closePicker()};
 let st0=null;try{st0=JSON.parse(localStorage.getItem('ayahPos')||'null')}catch(e){}
 if(st0&&st0.sur>=1&&st0.sur<=114)setPassage(st0.sur,st0.from,st0.to,st0.i);else setPassage(1,1,7,0);
 resize();
