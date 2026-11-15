@@ -1,5 +1,5 @@
 // Change this version string whenever you replace index.html, so phones pick up the update.
-const V = 'ayah-trace-v7';
+const V = 'ayah-trace-v9';
 const FONTS = 'ayah-fonts';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 

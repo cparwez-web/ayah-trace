@@ -137,6 +137,14 @@ header{padding:12px 14px 8px;gap:10px;justify-content:flex-start}
 .dot.sb::before{content:"";position:absolute;left:-11px;top:2px;bottom:2px;width:2px;background:var(--gold);border-radius:1px}
 html,body{touch-action:manipulation}
 button,select,input,label,.dot,.vrow,.chip,.sw{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+canvas{cursor:none}
+canvas.pan{cursor:grab}
+#ptr{position:absolute;left:0;top:0;display:none;pointer-events:none;z-index:3;will-change:transform}
+#ring{position:absolute;left:0;top:0;border-radius:50%;transform:translate(-50%,-50%)}
+#ring.pn{box-shadow:0 0 0 2px var(--gold)}
+#ring.er{border:2px solid var(--muted);background:rgba(255,255,255,.16);box-sizing:border-box}
+#pico{position:absolute;left:-3px;top:-27px;width:28px;height:28px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+#pico.er{stroke:#e58fa0}
 </style>
 </head>
 <body>
@@ -170,6 +178,7 @@ button,select,input,label,.dot,.vrow,.chip,.sw{touch-action:manipulation;-webkit
   <div id="vtag"></div>
   <div id="ghost"></div>
   <canvas id="c"></canvas>
+  <div id="ptr"><div id="ring"></div><svg id="pico" viewBox="0 0 24 24" aria-hidden="true"></svg></div>
 </div>
 <div id="check"><div id="chips"></div><span id="sc"></span> <button id="save">Save result</button></div>
 <div id="tools">
@@ -265,6 +274,13 @@ function mid(){const a=[...ptrs.values()];return{x:(a[0][0]+a[1][0])/2,y:(a[0][1
 cv.addEventListener('pointerdown',e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,spos(e));if(ptrs.size===2){if(cur){strokes.pop();cur=null}panning=false;g0=mid();redraw();return}if(ptrs.size>2)return;if(panMode){panning=spos(e);return}cur={w:(eraseMode?esz:pen)/vs,p:[pos(e)],e:eraseMode,c:inkSel};strokes.push(cur);redraw()});
 cv.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;e.preventDefault();const p=spos(e);ptrs.set(e.pointerId,p);if(ptrs.size===2&&g0){const m=mid(),n=Math.min(4,Math.max(.5,vs*m.d/g0.d)),k=n/vs;vx=m.x-(g0.x-vx)*k;vy=m.y-(g0.y-vy)*k;vs=n;g0=m;redraw();return}if(ptrs.size>1)return;if(panning){vx+=p[0]-panning[0];vy+=p[1]-panning[1];panning=p;redraw();return}if(!cur)return;const ev=e.getCoalescedEvents?e.getCoalescedEvents():[];(ev.length?ev:[e]).forEach(x=>cur.p.push(pos(x)));redraw()});
 ['pointerup','pointercancel'].forEach(n=>cv.addEventListener(n,e=>{ptrs.delete(e.pointerId);if(ptrs.size<2)g0=null;if(ptrs.size===0){cur=null;panning=false}}));
+const ptr=$('ptr'),ring=$('ring'),pico=$('pico');
+const PNI='<path d="M4,-4 C0,-30 22,-62 56,-66 C52,-44 36,-14 4,-4 Z" fill="var(--accent)" fill-opacity=".22" stroke="var(--accent)" stroke-width=".8"/><line x1="0" y1="0" x2="54" y2="-65" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round"/><line x1="14" y1="-18" x2="28" y2="-10" stroke-width=".8"/><line x1="22" y1="-30" x2="38" y2="-20" stroke-width=".8"/><line x1="30" y1="-40" x2="46" y2="-30" stroke-width=".8"/><line x1="38" y1="-50" x2="53" y2="-40" stroke-width=".8"/>',ERI='<path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>';
+function showPtr(e){if(panMode||ptrs.size>1){ptr.style.display='none';return}const q=spos(e),sz=eraseMode?esz:pen;ring.style.width=ring.style.height=sz+'px';ring.className=eraseMode?'er':'pn';ring.style.background=eraseMode?'':(inkSel||'var(--ink)');pico.setAttribute('class',eraseMode?'er':'');pico.innerHTML=eraseMode?ERI:PNI;if(eraseMode){pico.setAttribute('viewBox','0 0 24 24');pico.style.cssText='left:-3px;top:-27px;width:28px;height:28px'}else{pico.setAttribute('viewBox','-4 -68 64 72');pico.style.cssText='left:-4px;top:-68px;width:64px;height:72px'}ptr.style.transform='translate('+q[0]+'px,'+q[1]+'px)';ptr.style.display='block'}
+cv.addEventListener('pointerdown',showPtr);
+cv.addEventListener('pointermove',e=>{if(e.pointerType==='touch'&&!ptrs.has(e.pointerId))return;showPtr(e)});
+['pointerup','pointercancel'].forEach(n=>cv.addEventListener(n,e=>{if(e.pointerType==='touch'||ptrs.size>1)ptr.style.display='none'}));
+cv.addEventListener('pointerleave',()=>{ptr.style.display='none'});
 const st=$('stage');
 ['selectstart','contextmenu','dragstart','gesturestart'].forEach(n=>st.addEventListener(n,e=>e.preventDefault()));
 st.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
